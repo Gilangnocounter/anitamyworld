@@ -21,7 +21,7 @@
         content="Tạo thiên hà 3D, gửi quà tặng ý nghĩa, chia sẻ cảm xúc với hiệu ứng tương tác độc đáo. Bảo mật code, trải nghiệm cá nhân hóa.">
     <meta property="og:image" content="https://loveplanet.vercel.app/assets/images/planet.png">
 
-    -- <div id="google_translate_element" style="position:fixed;top:70px;right:13px;z-index:10000;"></div>
+    <div id="google_translate_element" style="position:fixed;top:70px;right:13px;z-index:10000;"></div>
     <script type="importmap">
     {
       "imports": {
@@ -675,7 +675,7 @@
         import { UnrealBloomPass } from 'https://unpkg.com/three@0.152.2/examples/jsm/postprocessing/UnrealBloomPass.js';
 
         // Xử lý sự kiện cho bảng hướng dẫn
-        // const helpIcon = document.querySelector('.help-icon');
+        const helpIcon = document.querySelector('.help-icon');
         const helpPanel = document.querySelector('.help-panel');
         const helpCloseBtn = helpPanel.querySelector('.close-btn');
 
@@ -1119,7 +1119,7 @@
                     userLogoContainer.classList.add('hidden');
                 }
                 // Đưa nút hướng dẫn lên vị trí góc trên trái (thay vị trí login)
-                // const helpIcon = document.querySelector('.help-icon');
+                const helpIcon = document.querySelector('.help-icon');
                 if (helpIcon) {
                     helpIcon.style.position = 'fixed';
                     helpIcon.style.top = '20px';
