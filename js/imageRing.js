@@ -357,59 +357,18 @@ export class FlowerRingSystem {
         const textureLoader = new THREE.TextureLoader();
         textureLoader.setCrossOrigin('anonymous');
         
-       // === GANTI BAGIAN INI ===
-const imagePaths = [
-    'assets/images/b1.JPG',
-    'assets/images/b2.JPG',
-    'assets/images/b3.JPG',
-    'assets/images/b4.JPG',
-    'assets/images/b5.JPG',
-    'assets/images/b6.JPG',
-    'assets/images/b7.JPG',
-    'assets/images/b8.JPG',
-    'assets/images/b9.JPG',
-    'assets/images/b10.JPG',
-    'assets/images/b11.JPG',
-    'assets/images/b12.JPG',
-    'assets/images/b13.JPG',
-    'assets/images/b14.JPG',
-    'assets/images/b15.JPG',
-    // tambah file lain di sini
-];
-
-const loader = new THREE.TextureLoader();
-
-Promise.all(
-    imagePaths.map(path =>
-        new Promise(resolve => {
-            loader.load(
-                path,
-                tex => resolve(tex),
-                undefined,
-                err => {
-                    console.warn('Failed loading', path, err);
-                    resolve(null);
-                }
-            );
-        })
-    )
-).then(results => {
-    // simpan semua texture yg berhasil di-load
-    this.textures = results.filter(Boolean);
-
-    if (!this.textures.length) {
-        console.error('No textures loaded. Using fallback.');
-        loader.load('assets/images/b1.png', tex => {
-            this.textures = [tex];
-            this.processAndCreateFlowers();
-        });
-        return;
+        textureLoader.load(
+            'assets/images/b1.png', 
+            (texture) => {
+                this.processAndCreateFlowers(texture);
+            },
+            undefined,
+            (error) => {
+                console.error('Lỗi load texture:', error);
+                this.createFallbackTexture();
+            }
+        );
     }
-
-    this.processAndCreateFlowers();
-});
-// === SAMPAI SINI ===
-
 
     createFallbackTexture() {
         try {
@@ -450,32 +409,15 @@ Promise.all(
     createHardcodedFallbackTexture() {
         try {
             // Tạo texture đơn giản nhất có thể
-            // pilih random texture dari yang sudah di-load
-            const tex = this.textures[Math.floor(Math.random() * this.textures.length)];
-
-            // hitung aspect ratio
-            const img = tex.image || { width: 1, height: 1 };
-            const aspect = img.width / img.height;
-
-            // tentukan ukuran dasar (kamu bisa atur besar kecilnya di sini)
-            const baseSize = 12;
-            
-            let width, height;
-            if (aspect >= 1) {
-              width  = baseSize;
-              height = baseSize / aspect;
-            } else {
-              width  = baseSize * aspect;
-              height = baseSize;
-            }
-            
             const material = new THREE.SpriteMaterial({
-                map: tex,
-                transparent: true
+                color: 0xff69b4,
+                transparent: true,
+                opacity: 1
             });
+            
+            // Tạo sprite đơn giản
             const sprite = new THREE.Sprite(material);
-            sprite.scale.set(width, height, 1);
-
+            sprite.scale.set(10, 10, 1);
             
             // Tạo group đơn giản
             if (!this.flowerRing) {
