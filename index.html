@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Love Planet - Tạo vũ trụ 3D, chia sẻ cảm xúc, gửi tặng món quà ý nghĩa với hiệu ứng đẹp mắt. Trải nghiệm không gian thiên hà độc đáo, cá nhân hóa và bảo mật.">
+    <meta name="keywords"
+        content="Love Planet, thiên hà 3D, vũ trụ, quà tặng, hiệu ứng 3D, chia sẻ cảm xúc, bảo mật code, obfuscate, three.js, tặng quà online, không gian ảo, trải nghiệm tương tác">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Love Planet Team">
+    <link rel="canonical" href="https://loveplanet.vercel.app/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://loveplanet.vercel.app/">
+    <meta property="og:title" content="Love Planet - Vũ trụ 3D, Quà tặng cảm xúc, Hiệu ứng đẹp mắt">
+    <meta property="og:description"
+        content="Tạo thiên hà 3D, gửi quà tặng ý nghĩa, chia sẻ cảm xúc với hiệu ứng tương tác độc đáo. Bảo mật code, trải nghiệm cá nhân hóa.">
+    <meta property="og:image" content="https://loveplanet.vercel.app/assets/images/planet.png">
+
+    <div id="google_translate_element" style="position:fixed;top:70px;right:13px;z-index:10000;"></div>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.174.0/build/three.module.js",
+        "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.152.2/examples/jsm/controls/OrbitControls.js",
+        "three/addons/loaders/FontLoader.js": "https://unpkg.com/three@0.152.2/examples/jsm/loaders/FontLoader.js",
+        "three/addons/geometries/TextGeometry.js": "https://unpkg.com/three@0.152.2/examples/jsm/geometries/TextGeometry.js",
+        "three/addons/utils/BufferGeometryUtils.js": "https://unpkg.com/three@0.152.2/examples/jsm/utils/BufferGeometryUtils.js",
+        "three/addons/loaders/GLTFLoader.js": "https://unpkg.com/three@0.152.2/examples/jsm/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js": "https://unpkg.com/three@0.152.2/examples/jsm/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/RenderPass.js": "https://unpkg.com/three@0.152.2/examples/jsm/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js": "https://unpkg.com/three@0.152.2/examples/jsm/postprocessing/UnrealBloomPass.js"
+      }
+    }
+    </script>
+    <!-- Chặn DevTools -->
+    <script src="./js/detect-devtools.js"></script>
+    <script type='text/javascript'>
+        // Bypass for developers
+        const keyName = 'key';
+        const keyValue = '9ac7ec230e0e4513578f309d6d3579ad';
+
+        // Handle via config
+        DisableDevtool({
+            tkName: keyName,
+            md5: keyValue,
+            interval: '100',
+        });
+    </script>
+    <script type="module" src="./js/heartText.js"></script>
+    <script type="module" src="./js/nebula-system.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Planet</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/planet.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body {
+            margin: 0;
+            background: #000000;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw !important;
+            height: 100vh !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+            background-size: 10px 10px;
+            z-index: 0;
+            animation: twinkle 4s infinite;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 0.9;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        .info {
+            position: absolute;
+            top: 70px;
+            left: 10px;
+            color: white;
+            font-family: Arial, sans-serif;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 3;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Spinner cho nút */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-top: 2px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        /* Fade in effect cho popup */
+        .share-popup {
+            animation: fadeIn 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: opacity, transform;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Hiệu ứng tan biến dạng hạt khi đóng popup */
+        .share-popup.fade-out {
+            animation: particleDisintegrate 1.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            filter: blur(0px);
+        }
+
+        @keyframes particleDisintegrate {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+                filter: blur(0px) brightness(1);
+            }
+
+            20% {
+                opacity: 0.95;
+                transform: translate(-50%, -50%) scale(1.02);
+                filter: blur(0.5px) brightness(1.1);
+            }
+
+            40% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1.05);
+                filter: blur(1px) brightness(1.2);
+            }
+
+            70% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(0.8);
+                filter: blur(4px) brightness(0.8);
+            }
+
+            90% {
+                opacity: 0.1;
+                transform: translate(-50%, -50%) scale(0.3);
+                filter: blur(8px) brightness(0.5);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+                filter: blur(12px) brightness(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+            }
+        }
+
+        /* CSS cho hạt tròn nhỏ */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: all 2.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Animation cho hạt tan biến */
+        @keyframes particleFadeOut {
+            0% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+                filter: blur(0px);
+            }
+
+            25% {
+                opacity: 0.9;
+                transform: scale(0.95) rotate(90deg) translate(calc(var(--dx) * 0.2), calc(var(--dy) * 0.2));
+                filter: blur(0.5px);
+            }
+
+            60% {
+                opacity: 0.5;
+                transform: scale(0.6) rotate(240deg) translate(calc(var(--dx) * 0.7), calc(var(--dy) * 0.7));
+                filter: blur(2px);
+            }
+
+            85% {
+                opacity: 0.2;
+                transform: scale(0.2) rotate(320deg) translate(calc(var(--dx) * 0.9), calc(var(--dy) * 0.9));
+                filter: blur(4px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0) rotate(360deg) translate(var(--dx), var(--dy));
+                filter: blur(6px);
+            }
+        }
+
+        /* Ẩn phần chữ 'Chọn ngôn ngữ' nhưng giữ dropdown */
+        .goog-te-gadget .goog-te-menu-value {
+            display: none !important;
+        }
+
+        .goog-te-gadget .goog-te-combo {
+            margin-left: 0 !important;
+        }
+
+        /* Ẩn icon Google mặc định */
+        .goog-logo-link,
+        .goog-te-gadget-icon {
+            display: none !important;
+        }
+
+        body {
+            top: 0px !important;
+            position: static !important;
+        }
+
+        /* Định vị icon custom đúng vị trí icon Google */
+        .goog-te-gadget {
+            position: relative !important;
+            display: inline-block !important;
+        }
+
+        .custom-translate-icon {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            cursor: pointer;
+            z-index: 10001;
+        }
+    </style>
+
+    <script src="js/exif.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script>
+        function showErrorToast(msg) {
+            let toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.bottom = '24px';
+            toast.style.right = '24px';
+            toast.style.background = 'rgba(40,40,40,0.95)';
+            toast.style.color = '#fff';
+            toast.style.padding = '14px 22px';
+            toast.style.borderRadius = '8px';
+            toast.style.fontSize = '15px';
+            toast.style.boxShadow = '0 2px 12px rgba(0,0,0,0.18)';
+            toast.style.zIndex = 9999;
+            toast.style.maxWidth = '350px';
+            toast.style.cursor = 'pointer';
+            toast.innerHTML = '<b>Lỗi ứng dụng:</b><br>' + msg + '<br><span style="font-size:12px;opacity:0.7;">(Click để ẩn)</span>';
+            toast.onclick = () => toast.remove();
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 10000);
+        }
+        window.addEventListener('error', function (e) {
+            showErrorToast(e.message + '<br>' + e.filename + ':' + e.lineno);
+        });
+        window.addEventListener('unhandledrejection', function (e) {
+            showErrorToast('Promise lỗi: ' + e.reason);
+        });
+    </script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'vi',
+                includedLanguages: 'vi,en,id,my,tl,ko,ja,es,km',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+        // Chèn icon custom vào trong widget Google Translate sau khi widget render
+        function insertCustomTranslateIcon() {
+            var gadget = document.querySelector('.goog-te-gadget');
+            if (gadget && !document.querySelector('.custom-translate-icon')) {
+                var img = document.createElement('img');
+                img.src = 'assets/images/translator.gif';
+                img.alt = 'Language';
+                img.className = 'custom-translate-icon';
+                img.style.position = 'absolute';
+                img.style.right = '0';
+                img.style.top = '50%';
+                img.style.transform = 'translateY(-50%)';
+                img.style.width = '20px';
+                img.style.height = '20px';
+                img.style.objectFit = 'contain';
+                img.style.cursor = 'pointer';
+                img.style.zIndex = '10001';
+                gadget.appendChild(img);
+            }
+        }
+        // Đợi widget Google Translate render xong mới chèn icon
+        document.addEventListener('DOMContentLoaded', function () {
+            var interval = setInterval(function () {
+                var gadget = document.querySelector('.goog-te-gadget');
+                if (gadget) {
+                    insertCustomTranslateIcon();
+                    clearInterval(interval);
+                }
+            }, 300);
+        });
+    </script>
+
+</head>
+
+<body>
+    <canvas id="canvas"
+        style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10;pointer-events:none;"></canvas>
+    <div class="stars-bg"></div>
+
+    <!-- Thêm bảng hướng dẫn -->
+    <div class="help-panel">
+        <div class="controls-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="help-title" style="margin: 0;">Hướng dẫn sử dụng</h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <a href="https://www.tiktok.com/@tvq1504" target="_blank"
+                    style="text-decoration: none; color: inherit;">
+                    <div
+                        style="display: flex; align-items: center; gap: 5px; padding: 6px 8px; background: rgba(255,255,255,0.1); border-radius: 6px; transition: all 0.3s ease; cursor: pointer; font-size: 0.8em;">
+                        <i class="fab fa-tiktok" style="font-size: 14px; color: #ff0050;"></i>
+                        <span>TikTok</span>
+                    </div>
+                </a>
+                <a href="https://zalo.me/0363232681" target="_blank"
+                    style="text-decoration: none; color: inherit; margin-right: 35px;">
+                    <div
+                        style="display: flex; align-items: center; gap: 5px; padding: 6px 8px; background: rgba(255,255,255,0.1); border-radius: 6px; transition: all 0.3s ease; cursor: pointer; font-size: 0.8em;">
+                        <i class="fab fa-facebook-messenger" style="font-size: 14px; color: #0068ff;"></i>
+                        <span>Zalo</span>
+                    </div>
+                </a>
+                <button class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div
+            style="font-size: 0.85em; color: rgba(255,255,255,0.7); margin-top: 8px; margin-bottom: 2px; font-style: italic;">
+            Nếu gặp lỗi, vui lòng liên hệ TikTok hoặc Zalo (icon góc phải)
+        </div>
+        <div class="help-section">
+            <div class="section-divider">
+                <h4>Điều khiển cơ bản</h4>
+            </div>
+            <ul>
+                <li><span class="label-pc">[PC]</span> Click đúp chuột: Phát nhạc và kích hoạt hiệu ứng camera</li>
+                <li><span class="label-pc">[PC]</span> <span
+                        style="font-size:1.2em;vertical-align:middle;">&#8593;</span> Ấn phím mũi tên lên: Bật/Tắt hiệu
+                    ứng bay của vòng ảnh
+                </li>
+                <li><span class="label-pc">[PC]</span> Ấn vào icon bức thư: Hiển thị/Ẩn chữ 3D
+                </li>
+                <li><span class="label-mobile">[Mobile]</span>Ấn 2 lần vào màn hình: Phát nhạc và kích hoạt hiệu ứng
+                    camera</li>
+                <li><span class="label-mobile">[Mobile]</span> Ấn vào icon hộp quà: Bật/Tắt hiệu ứng bay của vòng ảnh
+                </li>
+                <li><span class="label-mobile">[Mobile]</span> Ấn vào icon bức thư: Hiển thị/Ẩn chữ 3D
+                </li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <div class="section-divider">
+                <h4>Điều chỉnh góc nhìn</h4>
+            </div>
+            <ul>
+                <li>Click và kéo: Xoay camera</li>
+                <li>Cuộn chuột: Phóng to/thu nhỏ</li>
+                <li>Mobile: Vuốt để xoay, chụm/tách để phóng to/thu nhỏ</li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <div class="section-divider">
+                <h4>Tùy chỉnh <<Đối với người tạo>></h4>
+            </div>
+            <p>Nhấn vào biểu tượng CÀI ĐẶT ở góc phải để:</p>
+            <ul>
+                <li>Thay đổi màu sắc (hạt, tinh cầu) và giao diện</li>
+                <li>Điều chỉnh tốc độ xoay,tốc độ bay của ảnh và hạt</li>
+                <li>Chọn chế độ màu tự động hoặc tùy chỉnh</li>
+                <li>Thay đổi ảnh và âm thanh</li>
+            </ul>
+        </div>
+
+
+    </div>
+
+    <!-- Nút đăng nhập Google (icon tròn) ở góc trên trái -->
+    <button class="google-login-btn" id="googleLoginBtn" title="Đăng nhập Google">
+        <i class="fab fa-google"></i>
+    </button>
+
+    <!-- Logo user sau khi đăng nhập (dropdown trigger) -->
+    <div id="userLogoContainer" style="display:none;position:fixed;top:20px;left:20px;z-index:1002;">
+        <img id="userLogo" src="" alt="avatar"
+            style="width:40px;height:40px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.15);"
+            title="Click để xem thông tin">
+    </div>
+
+    <!-- Dropdown thông tin user -->
+    <div id="userDropdown"
+        style="display:none;position:fixed;top:70px;left:20px;z-index:1003;background:rgba(255,255,255,0.95);border-radius:12px;padding:16px;box-shadow:0 4px 20px rgba(0,0,0,0.15);min-width:200px;backdrop-filter:blur(10px);">
+        <div
+            style="display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #eee;">
+            <img id="userAvatar" src="" alt="avatar" style="width:40px;height:40px;border-radius:50%;">
+            <div>
+                <div id="userName" style="font-weight:600;color:#333;font-size:14px;"></div>
+                <div id="userEmail" style="font-size:12px;color:#666;"></div>
+            </div>
+        </div>
+        <button id="logoutBtn"
+            style="width:100%;background:#ff6b6b;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.2s;">Đăng
+            xuất</button>
+    </div>
+
+    <!-- Icon hướng dẫn lùi xuống dưới -->
+    <div class="help-icon">
+        <i class="fas fa-question-circle"></i>
+    </div>
+
+    <!-- Bảng hướng dẫn nhanh cho Mobile -->
+    <div class="quick-help-panel mobile-help" id="mobileQuickHelp">
+        <div class="quick-help-header">
+            <h3>📱 Hướng dẫn Mobile</h3>
+            <button class="quick-help-close-btn" onclick="closeQuickHelp('mobile')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="quick-help-content">
+            <div class="quick-help-section">
+                <h4>📷 Hiệu ứng Camera</h4>
+                <p>Ấn 2 lần vào màn hình để kích hoạt hiệu ứng camera</p>
+            </div>
+            <div class="quick-help-section">
+                <h4>🌸 Hiệu ứng bay vòng ảnh</h4>
+                <p>Ấn vào "icon hộp quà" ở góc phải màn hình để bật/tắt hiệu ứng bay</p>
+            </div>
+            <div class="quick-help-section">
+                <h4>💌 Thư mật 3D</h4>
+                <p>Ấn vào "icon bức thư" để hiển thị/ẩn chữ 3D (Nếu có)</p>
+            </div>
+            <div class="quick-help-section">
+                <h4>☄️ Mưa sao băng</h4>
+                <p>Tự động bật khi thiên hà có tính năng này</p>
+            </div>
+            <div class="quick-help-section">
+                <h4>🎮 Điều khiển camera</h4>
+                <p>Vuốt để xoay, chụm/tách để phóng to/thu nhỏ</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng hướng dẫn nhanh cho Desktop -->
+    <div class="quick-help-panel desktop-help" id="desktopQuickHelp">
+        <div class="quick-help-header">
+            <h3>💻 Hướng dẫn Desktop</h3>
+            <button class="quick-help-close-btn" onclick="closeQuickHelp('desktop')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="quick-help-content">
+            <div class="quick-help-section">
+                <h4>📷 Hiệu ứng Camera</h4>
+                <p>Click đúp chuột để kích hoạt hiệu ứng camera</p>
+            </div>
+            <div class="quick-help-section">
+                <h4>🌸 Hiệu ứng bay vòng ảnh</h4>
+                <p><span style="font-size:1.2em;vertical-align:middle;">&#8593;</span> Ấn phím mũi tên lên để bật/tắt
+                    hiệu ứng bay</p>
+            </div>
+            <div class="quick-help-section">
+                <h4>💌 Thư mật 3D</h4>
+                <p>Ấn vào "icon bức thư" để hiển thị/ẩn chữ 3D(Nếu có)</p>
+            </div>
+            <div class="quick-help-section">
+                <h4>☄️ Mưa sao băng</h4>
+                <p>Tự động bật khi thiên hà có tính năng này</p>
+            </div>
+            <div class="quick-help-section">
+                <h4>🎮 Điều khiển camera</h4>
+                <p>Click và kéo để xoay, cuộn chuột để phóng to/thu nhỏ</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút Món quà nhỏ ở chính giữa trên cùng màn hình -->
+    <button id="gift-btn" class="gift-btn" title="Hiệu ứng bay vòng ảnh">
+        <img src="assets/images/gift.gif" alt="Gift" style="width: 28px; height: 28px; vertical-align: middle;">
+    </button>
+
+    <!-- Nút Letter nhỏ ở chính giữa trên cùng màn hình (chỉ hiển thị ở web con) -->
+    <button id="letter-btn" class="letter-btn" title="Hiệu ứng thư tình">
+        <img src="assets/images/letter.gif" alt="Letter" style="width: 28px; height: 28px; vertical-align: middle;">
+    </button>
+    <script>
+        function isMobileDevice() {
+            // Kiểm tra user agent cho mobile và tablet
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isMobile = /mobi|android|iphone|ipad|ipod|windows phone|webos|blackberry/i.test(userAgent);
+
+            // Kiểm tra thêm cho iPad Pro và iPad mới
+            const isIPad = /ipad/i.test(userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+            // Kiểm tra Surface và tablet Windows
+            const isSurface = navigator.platform === 'Win32' && navigator.maxTouchPoints > 1;
+
+            // Kiểm tra screen width cho tablet
+            const isTablet = window.innerWidth >= 768 && window.innerWidth <= 1024;
+
+            return isMobile || isIPad || isSurface || isTablet;
+        }
+        function updateGiftBtnVisibility() {
+            var giftBtn = document.getElementById('gift-btn');
+            var letterBtn = document.getElementById('letter-btn');
+            if (!giftBtn) return;
+
+            // Kiểm tra nếu là mobile device
+            var isMobileOrTablet = isMobileDevice();
+
+            // Kiểm tra tablet landscape lớn (1024px-1380px landscape)
+            var isTabletLandscape = window.innerWidth > 1024 &&
+                window.innerWidth <= 1380 &&
+                window.innerHeight < window.innerWidth;
+
+            // Kiểm tra Surface và tablet Windows
+            var isSurface = navigator.platform === 'Win32' && navigator.maxTouchPoints > 1;
+
+            // Ẩn trên desktop (>1025px portrait hoặc >1380px landscape) nhưng không phải Surface
+            if (((window.innerWidth > 1025 && window.innerHeight > window.innerWidth) ||
+                (window.innerWidth > 1380 && window.innerHeight < window.innerWidth)) && !isSurface) {
+                giftBtn.style.display = 'none';
+            } else if (isMobileOrTablet || isTabletLandscape || isSurface) {
+                giftBtn.style.display = 'block';
+            } else {
+                giftBtn.style.display = 'none';
+            }
+
+            // Letter button chỉ hiển thị ở web con
+            if (letterBtn) {
+                const hash = window.location.hash;
+                if (hash.startsWith('#config=') || hash.startsWith('#id=')) {
+                    // Web con - hiển thị theo cùng logic với gift-btn
+                    if (((window.innerWidth > 1025 && window.innerHeight > window.innerWidth) ||
+                        (window.innerWidth > 1380 && window.innerHeight < window.innerWidth)) && !isSurface) {
+                        letterBtn.style.display = 'none';
+                    } else if (isMobileOrTablet || isTabletLandscape || isSurface) {
+                        letterBtn.style.display = 'block';
+                    } else {
+                        letterBtn.style.display = 'none';
+                    }
+                } else {
+                    // Web cha - ẩn hoàn toàn
+                    letterBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // Thêm class vào body ngay lập tức
+        (function () {
+            const hash = window.location.hash;
+            if (hash.startsWith('#config=') || hash.startsWith('#id=')) {
+                document.body.classList.add('web-con');
+            } else {
+                document.body.classList.add('web-cha');
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', updateGiftBtnVisibility);
+        window.addEventListener('resize', updateGiftBtnVisibility);
+        window.addEventListener('orientationchange', updateGiftBtnVisibility);
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+        import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+        import { AudioManager } from './js/audio.js';
+        import { ParticleSystem } from './js/particles.js';
+        import { CentralSphere } from './js/sphere.js';
+        import { FlowerRingSystem } from './js/imageRing.js';
+        import { CameraController } from './js/camera.js';
+        import { Heart } from './js/modelGlb.js';
+        import { processPayment, createPaymentModal, showToast, initWebSocket } from './js/payment.js';
+        import { EffectComposer } from 'https://unpkg.com/three@0.152.2/examples/jsm/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'https://unpkg.com/three@0.152.2/examples/jsm/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'https://unpkg.com/three@0.152.2/examples/jsm/postprocessing/UnrealBloomPass.js';
+
+        // Xử lý sự kiện cho bảng hướng dẫn
+        const helpIcon = document.querySelector('.help-icon');
+        const helpPanel = document.querySelector('.help-panel');
+        const helpCloseBtn = helpPanel.querySelector('.close-btn');
+
+        helpIcon.addEventListener('click', () => {
+            // Mở bằng icon - cũng hiển thị ở giữa màn hình
+            helpPanel.classList.add('center');
+            helpPanel.classList.add('active');
+        });
+
+        helpCloseBtn.addEventListener('click', () => {
+            helpPanel.classList.remove('active', 'center');
+        });
+
+        // Đóng bảng hướng dẫn khi click ngoài
+        document.addEventListener('click', (e) => {
+            if (helpPanel.classList.contains('active') &&
+                !helpPanel.contains(e.target) &&
+                !helpIcon.contains(e.target)) {
+                helpPanel.classList.remove('active', 'center');
+            }
+        });
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        // Giới hạn pixel ratio để giảm tải GPU trên desktop
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        // === BLOOM SETUP ===
+        // Chỉ bloom cho chữ 3D (layer 1)
+        const BLOOM_LAYER = 1;
+        const bloomParams = {
+            exposure: 1,
+            bloomStrength: 1.5,
+            bloomThreshold: 0,
+            bloomRadius: 0.25
+        };
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            bloomParams.bloomStrength,
+            bloomParams.bloomRadius,
+            bloomParams.bloomThreshold
+        );
+        const composer = new EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+
+        // Handle window resize cho cả composer
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+            cameraController.handleResize();
+        });
+
+        // Initialize HeartText
+        import { HeartText } from './js/heartText.js';
+        const heartText = new HeartText(scene);
+        // Set initial effect
+        heartText.setEffect('none');
+        window.renderer = renderer;
+
+        // Add ambient light
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        // Add point lights
+        const light1 = new THREE.PointLight(0xffffff, 1, 500);
+        light1.position.set(100, 100, 100);
+        scene.add(light1);
+
+        const light2 = new THREE.PointLight(0xffffff, 0.5, 500);
+        light2.position.set(-100, -100, -100);
+        scene.add(light2);
+
+        // Khởi tạo AudioManager duy nhất
+        if (!window.audioManager) {
+            window.audioManager = new AudioManager();
+        }
+
+        // Initialize systems
+        const audioManager = window.audioManager;
+        const particleSystem = new ParticleSystem(scene);
+        window.particleSystem = particleSystem;
+        const centralSphere = new CentralSphere(scene);
+        window.centralSphere = centralSphere;
+        centralSphere.setParticleSystem(particleSystem);
+        const flowerRingSystem = new FlowerRingSystem(scene);
+        centralSphere.setFlowerRing(flowerRingSystem);
+        const cameraController = new CameraController(camera, renderer);
+        window.cameraController = cameraController;
+        const heart = new Heart(scene);
+
+        // Ẩn loading overlay sau khi tất cả đã khởi tạo xong
+        setTimeout(() => {
+            const loadingOverlay = document.getElementById('flower-loading-overlay');
+            if (loadingOverlay) {
+                // Chỉ auto-hide cho web cha; web con sẽ để sphere.js quản lý
+                const hash = window.location.hash;
+                const isChildWeb = hash.startsWith('#config=') || hash.startsWith('#id=');
+                if (!isChildWeb) {
+                    loadingOverlay.style.opacity = '0';
+                    loadingOverlay.style.transition = 'opacity 0.8s ease-out';
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 800);
+                }
+            }
+        }, 3000); // Đợi 3 giây để đảm bảo mọi thứ đã load
+
+        // Double-click handler for desktop
+        window.addEventListener('dblclick', (event) => {
+            event.preventDefault();
+            audioManager.playOnly();
+            cameraController.triggerAnimation();
+        });
+
+        // Double tap handler for mobile
+        let lastTap = 0;
+        let tapCount = 0;
+        let tapTimer = null;
+        let lastTapX = 0;
+        let lastTapY = 0;
+        let isZooming = false;
+
+        const handleDoubleTap = (event) => {
+            // Kiểm tra nếu đang zoom thì bỏ qua
+            if (isZooming) {
+                return;
+            }
+
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+
+            // Lấy tọa độ từ changedTouches (cho touchend) hoặc touches (cho touchstart)
+            let currentX, currentY;
+            if (event.changedTouches && event.changedTouches.length > 0) {
+                currentX = event.changedTouches[0].clientX;
+                currentY = event.changedTouches[0].clientY;
+            } else if (event.touches && event.touches.length > 0) {
+                currentX = event.touches[0].clientX;
+                currentY = event.touches[0].clientY;
+            } else {
+                currentX = event.clientX || 0;
+                currentY = event.clientY || 0;
+            }
+
+            // Tính khoảng cách giữa 2 tap
+            const distance = Math.sqrt(
+                Math.pow(currentX - lastTapX, 2) +
+                Math.pow(currentY - lastTapY, 2)
+            );
+
+            // Double tap detected: thời gian < 600ms, khoảng cách < 30px, và không phải zoom
+            if (tapLength < 600 && tapLength > 100 && distance < 30) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                // Clear any pending single tap
+                if (tapTimer) {
+                    clearTimeout(tapTimer);
+                    tapTimer = null;
+                }
+
+                // Trigger the same actions as double click
+                audioManager.playOnly();
+                cameraController.triggerAnimation();
+
+                // Reset tap count
+                tapCount = 0;
+            } else {
+                // Single tap - wait to see if it becomes a double tap
+                tapCount++;
+                if (tapCount === 1) {
+                    tapTimer = setTimeout(() => {
+                        // Single tap confirmed
+                        tapCount = 0;
+                    }, 600);
+                }
+            }
+
+            lastTap = currentTime;
+            lastTapX = currentX;
+            lastTapY = currentY;
+        };
+
+        // Detect zoom gesture
+        let initialDistance = 0;
+        const handleTouchStart = (event) => {
+            if (event.touches.length === 2) {
+                initialDistance = Math.sqrt(
+                    Math.pow(event.touches[0].clientX - event.touches[1].clientX, 2) +
+                    Math.pow(event.touches[0].clientY - event.touches[1].clientY, 2)
+                );
+                isZooming = true;
+            }
+        };
+
+        const handleTouchEnd = () => {
+            // Reset zoom state after a delay
+            setTimeout(() => {
+                isZooming = false;
+            }, 300);
+        };
+
+        // Add double tap listener for mobile (chỉ dùng document)
+        const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+        if (isMobile) {
+            document.addEventListener('touchend', handleDoubleTap);
+            document.addEventListener('touchstart', handleTouchStart);
+            document.addEventListener('touchend', handleTouchEnd);
+        }
+
+        // Thêm xử lý phím tắt (phím Space)
+        window.addEventListener('keydown', (event) => {
+            if (event.code === 'ArrowUp') {
+                event.preventDefault();
+                if (flowerRingSystem) {
+                    if (!flowerRingSystem.isFlying) {
+                        flowerRingSystem.triggerFlyingEffect();
+                        showFlowerToast('Lạc ảnh thiên hà được kích hoạt');
+                    } else {
+                        flowerRingSystem.toggleFlyingPause();
+                        if (flowerRingSystem.isPaused) {
+                            showFlowerToast('Dừng hiệu ứng lạc ảnh');
+                        } else {
+                            showFlowerToast('Lạc ảnh thiên hà được kích hoạt');
+                        }
+                    }
+                }
+            }
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            particleSystem.animate();
+            centralSphere.animate();
+            flowerRingSystem.animate();
+            cameraController.update();
+            heartText.animate(); // Animate the HeartText
+            heart.animate();
+
+            // === BLOOM RENDERING ===
+            // 1. Render bloom layer (chỉ chữ 3D)
+            camera.layers.set(BLOOM_LAYER);
+            composer.render();
+
+            // 2. Render scene thường (không bloom)
+            camera.layers.set(0);
+            renderer.render(scene, camera);
+
+        }
+
+        animate();
+
+        // Trong <script type="module">, sau khi khởi tạo flowerRingSystem
+        const giftBtn = document.getElementById('gift-btn');
+        if (giftBtn) {
+            giftBtn.addEventListener('click', () => {
+                if (flowerRingSystem) {
+                    if (!flowerRingSystem.isFlying) {
+                        flowerRingSystem.triggerFlyingEffect();
+                        showFlowerToast('Lạc ảnh thiên hà được kích hoạt');
+                    } else {
+                        flowerRingSystem.toggleFlyingPause();
+                        if (flowerRingSystem.isPaused) {
+                            showFlowerToast('Dừng hiệu ứng lạc ảnh');
+                        } else {
+                            showFlowerToast('Lạc ảnh thiên hà được kích hoạt');
+                        }
+                    }
+                }
+                // Không ẩn giftBtn để có thể ấn lần nữa
+            });
+        }
+
+        // Logic cho letter-btn - toggle ẩn hiện text 3D
+        const letterBtn = document.getElementById('letter-btn');
+        if (letterBtn) {
+            letterBtn.addEventListener('click', () => {
+                if (window.heartText) {
+                    // Kiểm tra text có đang hiển thị hay không
+                    const isVisible = window.heartText.isHidden ? false : true;
+
+                    if (!isVisible) {
+                        // Hiển thị text với hiệu ứng xuất hiện
+                        if (typeof window.heartText.show === 'function') {
+                            window.heartText.show();
+                        }
+
+                        // Lấy text hiện tại từ config
+                        const currentText = window.heartText.config.text;
+                        // Lấy hiệu ứng xuất hiện hiện tại từ config
+                        const appearEffect = window.heartText.config.appearEffect || 'none';
+
+                        if (
+                            appearEffect === 'fadein' &&
+                            typeof window.heartText.showFadeInEffect === 'function'
+                        ) {
+                            window.heartText.showFadeInEffect(currentText, 3500);
+                        } else {
+                            // Nếu không chọn hiệu ứng xuất hiện, chỉ show text bình thường
+                            if (typeof window.heartText.setText === 'function') {
+                                window.heartText.setText(currentText);
+                            }
+                        }
+
+                        // Zoom out camera để nhìn thấy text rõ hơn
+                        if (window.cameraController) {
+                            // Kiểm tra trạng thái trái tim để điều chỉnh vị trí camera
+                            const heartEnabled = document.getElementById('enableCentralHeart')?.checked ||
+                                (window.heart3D && window.heart3D.visible);
+
+                            // Vị trí z khác nhau dựa trên trạng thái trái tim
+                            const zPosition = heartEnabled ? 640 : 430;
+
+                            gsap.to(window.cameraController.camera.position, {
+                                x: 0,
+                                y: 12,
+                                z: zPosition,
+                                duration: 3,
+                                ease: 'power2.out',
+                                onUpdate: () => {
+                                    window.cameraController.camera.lookAt(0, 20, 0);
+                                }
+                            });
+                        }
+
+                        showLetterToast('Hiển thị thư mật');
+                    } else {
+                        // Ẩn text đi
+                        if (typeof window.heartText.hide === 'function') {
+                            window.heartText.hide();
+                        }
+                        showLetterToast('Ẩn thư mật');
+                    }
+                }
+            });
+        }
+
+        // Toast nhỏ thông báo hiệu ứng bay ảnh
+        function showFlowerToast(message) {
+            let toast = document.getElementById('flower-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'flower-toast';
+                document.body.appendChild(toast);
+            }
+            // Reset style để đảm bảo màu mới
+            toast.style.position = 'fixed';
+            toast.style.bottom = '32px';
+            toast.style.left = '50%';
+            toast.style.right = '';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.background = 'rgba(255,107,107,0.92)';
+            toast.style.color = '#fff';
+            toast.style.fontSize = '13px';
+            toast.style.padding = '7px 18px';
+            toast.style.borderRadius = '16px';
+            toast.style.boxShadow = '0 2px 8px rgba(255,107,107,0.3)';
+            toast.style.zIndex = 9999;
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.2s';
+
+            toast.textContent = message;
+            toast.style.opacity = '1';
+            // Ẩn sau 1.5s
+            clearTimeout(toast._hideTimeout);
+            toast._hideTimeout = setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 1500);
+        }
+
+        // Toast nhỏ thông báo thư tình
+        function showLetterToast(message) {
+            let toast = document.getElementById('letter-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'letter-toast';
+                toast.style.position = 'fixed';
+                toast.style.bottom = '32px';
+                toast.style.left = '50%';
+                toast.style.right = '';
+                toast.style.transform = 'translateX(-50%)';
+                toast.style.background = 'rgba(255,107,107,0.92)';
+                toast.style.color = '#fff';
+                toast.style.fontSize = '13px';
+                toast.style.padding = '7px 18px';
+                toast.style.borderRadius = '16px';
+                toast.style.boxShadow = '0 2px 8px rgba(255,107,107,0.3)';
+                toast.style.zIndex = 9999;
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.2s';
+                document.body.appendChild(toast);
+            }
+            toast.textContent = message;
+            toast.style.opacity = '1';
+            // Ẩn sau 1.5s
+            clearTimeout(toast._hideTimeout);
+            toast._hideTimeout = setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 1500);
+        }
+
+        // Sau khi xử lý DOMContentLoaded, nếu là web con thì đẩy icon âm thanh lên vị trí icon cài đặt
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash;
+
+            // Thêm class vào body để CSS có thể detect
+            if (hash.startsWith('#config=') || hash.startsWith('#id=')) {
+                document.body.classList.add('web-con');
+            } else {
+                document.body.classList.add('web-cha');
+            }
+
+            // Chỉ tạo modal thanh toán khi ở web cha (không có #config= hoặc #id=)
+            if (!hash.startsWith('#config=') && !hash.startsWith('#id=')) {
+                // Khởi tạo modal thanh toán chỉ cho web cha
+                createPaymentModal();
+            }
+
+            // Xử lý cho web con (có #config= hoặc #id=)
+            if (hash.startsWith('#config=') || hash.startsWith('#id=')) {
+                // Ẩn nút Google login triệt để
+                const googleLoginBtn = document.getElementById('googleLoginBtn');
+                if (googleLoginBtn) {
+                    googleLoginBtn.style.display = 'none';
+                    googleLoginBtn.classList.add('hidden');
+                }
+                // Ẩn userLogoContainer trên web con
+                const userLogoContainer = document.getElementById('userLogoContainer');
+                if (userLogoContainer) {
+                    userLogoContainer.style.display = 'none';
+                    userLogoContainer.classList.add('hidden');
+                }
+                // Đưa nút hướng dẫn lên vị trí góc trên trái (thay vị trí login)
+                const helpIcon = document.querySelector('.help-icon');
+                if (helpIcon) {
+                    helpIcon.style.position = 'fixed';
+                    helpIcon.style.top = '20px';
+                    helpIcon.style.left = '20px';
+                    helpIcon.style.right = '';
+                    helpIcon.style.zIndex = 1003;
+                    helpIcon.style.marginLeft = '0';
+                }
+            }
+
+            // Hiển thị bảng hướng dẫn chính cho web cha (cả desktop và mobile)
+            if (!hash.startsWith('#config=') && !hash.startsWith('#id=')) {
+                setTimeout(() => {
+                    showMainHelp();
+                }, 1000); // Đợi 1 giây để trang load hoàn toàn
+            }
+
+            // Khởi tạo WebSocket khi trang load
+            initWebSocket();
+        });
+
+        // Hàm hiển thị bảng hướng dẫn nhanh
+        function showQuickHelp() {
+            const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+            const mobileHelp = document.getElementById('mobileQuickHelp');
+            const desktopHelp = document.getElementById('desktopQuickHelp');
+
+            if (isMobile && mobileHelp) {
+                mobileHelp.classList.add('active');
+            } else if (!isMobile && desktopHelp) {
+                desktopHelp.classList.add('active');
+            }
+        }
+
+        // Hàm đóng bảng hướng dẫn nhanh
+        function closeQuickHelp(type) {
+            const helpPanel = document.getElementById(type + 'QuickHelp');
+            if (helpPanel) {
+                helpPanel.classList.remove('active');
+                // Phát nhạc khi đóng bảng hướng dẫn
+                if (window.audioManager) {
+                    window.audioManager.playOnly();
+                }
+            }
+        }
+
+        // Thêm vào global scope để có thể gọi từ onclick
+        window.closeQuickHelp = closeQuickHelp;
+
+        // Đóng bảng hướng dẫn khi click bên ngoài
+        document.addEventListener('click', (event) => {
+            const mobileHelp = document.getElementById('mobileQuickHelp');
+            const desktopHelp = document.getElementById('desktopQuickHelp');
+
+            if (mobileHelp && mobileHelp.classList.contains('active') &&
+                !mobileHelp.contains(event.target) &&
+                !event.target.closest('.quick-help-close-btn')) {
+                mobileHelp.classList.remove('active');
+                // Phát nhạc khi đóng bảng hướng dẫn
+                if (window.audioManager) {
+                    window.audioManager.playOnly();
+                }
+            }
+
+            if (desktopHelp && desktopHelp.classList.contains('active') &&
+                !desktopHelp.contains(event.target) &&
+                !event.target.closest('.quick-help-close-btn')) {
+                desktopHelp.classList.remove('active');
+                // Phát nhạc khi đóng bảng hướng dẫn
+                if (window.audioManager) {
+                    window.audioManager.playOnly();
+                }
+            }
+        });
+
+        // Hàm hiển thị bảng hướng dẫn chính cho web cha
+        function showMainHelp() {
+            const helpPanel = document.querySelector('.help-panel');
+            if (helpPanel) {
+                // Lần đầu mở - hiển thị ở giữa màn hình
+                helpPanel.classList.add('center');
+                helpPanel.classList.add('active');
+            }
+        }
+    </script>
+    <script type="module" src="./js/auth.js"></script>
+    <script type="module" src="./js/sphere.js"></script>
+    <div id="flower-loading-overlay"
+        style="display:block;position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);backdrop-filter:blur(12px);z-index:999999;pointer-events:none;">
+        <div
+            style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:#fff;font-family:Arial,sans-serif;z-index:1;">
+            <!-- Logo/Icon -->
+            <div style="margin-bottom:30px;">
+                <img src="assets/images/planet.png" alt="Love Planet"
+                    style="width:60px;height:60px;filter:drop-shadow(0 0 10px rgba(255,107,107,0.5));animation:pulse 2s ease-in-out infinite;image-rendering: -webkit-optimize-contrast;image-rendering: crisp-edges;">
+            </div>
+            <!-- Spinner -->
+            <div
+                style="width:60px;height:60px;border:4px solid rgba(255,255,255,0.2);border-top:4px solid #ff6b6b;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 25px;box-shadow:0 0 30px rgba(255,107,107,0.6);">
+            </div>
+            <!-- Text -->
+            <div
+                style="font-size:24px;font-weight:700;margin-bottom:15px;text-shadow:0 0 15px rgba(255,255,255,0.6);background:linear-gradient(45deg, #ff6b6b, #ffd93d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                Love Planet
+            </div>
+            <div style="font-size:18px;font-weight:500;margin-bottom:10px;text-shadow:0 0 10px rgba(255,255,255,0.5);">
+                Đang tải thiên hà...</div>
+            <div style="font-size:14px;color:rgba(255,255,255,0.7);text-shadow:0 0 5px rgba(255,255,255,0.3);">Vui lòng
+                chờ trong giây lát</div>
+        </div>
+    </div>
+    <audio id="bg-audio" style="display:none"></audio>
+    <canvas id="canvas"
+        style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10;pointer-events:none;"></canvas>
+    <script src="./js/meteors.js"></script>
+    <script>
+        // Event listener cho user profile đã được xử lý trong auth.js
+        // Không cần duplicate ở đây nữa
+    </script>
+    <!-- Toast nhỏ thông báo hiệu ứng bay ảnh -->
+    <div id="flower-toast"
+        style="position:fixed;bottom:32px;left:50%;right:auto;transform:translateX(-50%);background:rgba(30,30,30,0.92);color:#fff;font-size:13px;padding:7px 18px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.12);z-index:9999;opacity:0;transition:opacity 0.2s;">
+    </div>
+</body>
