@@ -342,14 +342,16 @@
       margin-bottom: 20px;
     }
     
-    /* Tombol */
+    /* Tombol wrapper */
     .panel-buttons {
-      position: relative;
+      position: relative;          /* biar No bisa absolute */
       display: flex;
-      gap: 20px;
       justify-content: center;
+      align-items: center;
+      min-height: 60px;            /* kasih tinggi area supaya tombol nggak tabrakan */
     }
     
+    /* Style umum tombol */
     .panel-buttons button {
       padding: 10px 24px;
       border: none;
@@ -359,21 +361,28 @@
       transition: all 0.25s ease;
     }
     
+    /* Tombol Yes */
     #btnYes {
       background: #ff4da6;
       color: white;
+      position: relative;          /* tetap ikut flow normal */
+      z-index: 1;
     }
     
+    /* Tombol No (awal di kanan Yes, bisa kabur via JS) */
     #noBtn {
       background: #ddd;
       color: #333;
       position: absolute;
+      left: 120px;   /* geser kanan dari Yes */
+      top: 0;
     }
     
+    /* Hover effect */
     .panel-buttons button:hover {
       transform: scale(1.05);
     }
-   
+
     </style>
 
     <script src="js/exif.js"></script>
@@ -668,11 +677,13 @@
         
           // Fungsi untuk memindahkan tombol "No"
           function moveNoBtn() {
-            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 20);
-            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 20);
-            btnNo.style.left = x + "px";
-            btnNo.style.top = y + "px";
+              const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 20);
+              const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 20);
+              btnNo.style.left = x + "px";
+              btnNo.style.top = y + "px";
+              btnNo.style.position = "fixed"; // biar lompat bebas se-layar
           }
+
         
           // Event listener: saat mouse mendekat tombol No → dia kabur
           btnNo.addEventListener("mouseenter", moveNoBtn);
