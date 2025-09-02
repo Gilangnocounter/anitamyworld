@@ -313,7 +313,7 @@
 
     /* QUESTION PANEL STYLE */
     .overlay-panel {
-      position: relative;
+      position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.6); /* semi transparan */
@@ -321,7 +321,7 @@
       justify-content: center;
       align-items: center;
       z-index: 1000; /* biar di atas canvas */
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(5px);
     }
     
     /* Konten panel */
@@ -374,7 +374,7 @@
       background: #ddd;
       color: #333;
       position: absolute;
-      left: 600px;   /* geser kanan dari Yes */
+      left: 120px;   /* geser kanan dari Yes */
       top: 0;
     }
     
@@ -474,7 +474,7 @@
       <div class="panel-content">
         <h2>Do you wanna see the prettiest girl ever?</h2>
         <div class="panel-buttons">
-          <button id="btnYes" onclick="moveNoBtn()">Of course 😍</button>
+          <button id="btnYes">Of course 😍</button>
           <button id="noBtn">No way 🙂‍↔️</button>
         </div>
       </div>
@@ -657,9 +657,7 @@
     </div>
 
     <!-- Backsound -->
-    <audio id="bgmusic" autoplay loop>
-        <source src="assets/images/music.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bgm" src="assets/audio/music.mp3" loop></audio>
 
     <!-- GIFT BUTTON -->
 <!--     <button id="gift-btn" class="gift-btn" title="Hiệu ứng bay vòng ảnh" style="display:none;">
@@ -675,6 +673,7 @@
           const panel = document.getElementById("questionPanel");
           const btnYes = document.getElementById("btnYes");
           const btnNo = document.getElementById("noBtn");
+          const audio = document.getElementById("bgm");
         
           // Fungsi untuk memindahkan tombol "No"
           function moveNoBtn() {
@@ -685,20 +684,17 @@
               btnNo.style.position = "fixed"; // biar lompat bebas se-layar
           }
 
-          // fungsi play music
-          const music = document.getElementById("bgmusic");
-          function startMusic() {
-            music.play().catch(err => console.log("Autoplay blocked:", err));
-          }
-
         
           // Event listener: saat mouse mendekat tombol No → dia kabur
           btnNo.addEventListener("mouseenter", moveNoBtn);
         
-          // Klik Yes → sembunyikan panel
+          // Klik Yes → sembunyikan panel & play musik
           btnYes.addEventListener("click", () => {
             panel.style.display = "none";
-            // TODO: bisa tambahin musik atau animasi di sini
+            audio.volume = 0.5;     // atur volume
+            audio.play().catch(err => {
+              console.error("Audio gagal play:", err);
+            });
           });
 
         
