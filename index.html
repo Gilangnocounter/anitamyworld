@@ -571,9 +571,7 @@
     </div>
 
     <!-- Backsound -->
-    <audio id="bgm" autoplay loop muted>
-        <source src="assets/audio/music.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bgm" src="assets/audio/music.mp3" loop></audio>
 
     <!-- GIFT BUTTON -->
 <!--     <button id="gift-btn" class="gift-btn" title="Hiệu ứng bay vòng ảnh" style="display:none;">
@@ -586,11 +584,17 @@
     </button>
     <script>
         const audio = document.getElementById("bgm");
-        // coba unmute setelah delay (kadang perlu trick kecil)
-        setTimeout(() => {
-            audio.muted = false;
-            audio.volume = 0.5; // atur volume
-        }, 1000);
+
+        // buat AudioContext
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const track = ctx.createMediaElementSource(audio);
+        track.connect(ctx.destination);
+        
+        // coba play otomatis
+        audio.play().catch(() => {
+          // kalau gagal, coba resume context
+          ctx.resume().then(() => audio.play());
+        });
         
         function isMobileDevice() {
             // Kiểm tra user agent cho mobile và tablet
