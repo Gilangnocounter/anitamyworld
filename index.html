@@ -320,21 +320,24 @@
         flex-direction: column;
         position: relative;
         z-index: 1000;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(5px);
     }
 
     button {
         padding: 10px 20px;
         border: none;
         border-radius: 10px;
-        background-color: #ff99cc;
         color: white;
         font-size: 1rem;
         margin-top: 20px;
         cursor: pointer;
+        background: #ff4da6;
     }
     
     button:hover {
         background-color: #ff66a3;
+        transform: scale(1.05);
     }
 
     #noBtn {
@@ -431,7 +434,7 @@
      <div id="questionPanel" class="overlay-panel">
           <h2><b></b>Do you wanna see the prettiest girl ever?</b></h2>
           <div>
-              <button onclick="startMusic()">Of course 😍</button>
+              <button id="btnYes" onclick="startMusic()">Of course 😍</button>
               <button id="noBtn" onclick="moveNoBtn()">No way 🙂‍↔️</button>
           </div>
       </div>
@@ -638,9 +641,18 @@
 
         //Fungsi play music
         const music = document.getElementById("bgmusic");
+        const panel = document.getElementById("questionPanel");
+        const btnYes = document.getElementById("btnYes");
+        
         function startMusic() {
           music.play().catch(err => console.log("Autoplay blocked:", err));
         }
+
+        // Klik Yes --> hilangkan panel
+        btnYes.addEventListener("click", () => {
+            panel.style.display = "none"; // sembunyikan panel
+        });
+
         music.addEventListener('play',()=>{
             ticker=setInterval(()=>updateLyrics(music.currentTime),200);
         });
