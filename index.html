@@ -312,17 +312,25 @@
         }
 
     /* QUESTION PANEL STYLE */
+    .container {
+      position: relative;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); /* semi transparan */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; /* biar di atas canvas */
+      backdrop-filter: blur(5px);
+    }
+    
     .overlay-panel {
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        flex-direction: column;
-        position: relative;
-        z-index: 1000;
         background: rgba(255,255,255,0.9);
+        border-radius: 20px;
+        padding: 30px 40px;
+        display: none;
+        text-align: center;
+        max-width: 400px;
         box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         font-family: 'Poppins', sans-serif;
         color: #333;
@@ -440,14 +448,15 @@
     <div class="stars-bg"></div>
 
     <!-- QUESTION PANEL -->
-     <div id="questionPanel" class="overlay-panel">
+    <div class="container">
+        <div id="questionPanel" class="overlay-panel">
           <h2><b></b>Do you wanna see the prettiest girl ever?</b></h2>
           <div>
               <button id="btnYes" onclick="startMusic()">Of course 😍</button>
               <button id="noBtn" onclick="moveNoBtn()">No way 🙂‍↔️</button>
           </div>
       </div>
-
+    </div>
 
     
     <!-- PANEL INSTRUKSI -->
