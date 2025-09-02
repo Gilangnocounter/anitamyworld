@@ -365,29 +365,27 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.35); /* semi transparan tipis */
+      background: rgba(0,0,0,0.4); /* semi transparan */
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 999; /* di atas canvas */
+      z-index: 999; /* di atas canvas, tapi di bawah panel utama */
       font-family: 'Poppins', sans-serif;
-      color: #f0f0f0;
-      font-size: 1.2rem;
-      line-height: 1.6;
+      color: white;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
       text-align: center;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
       transition: opacity 0.5s ease;
-      padding: 0 20px;
     }
     
     .overlay-instruction span {
-      max-width: 600px;
-      font-weight: 400;
-      background: none;      /* ❌ no background box */
-      padding: 0;            /* ❌ no padding */
-      border-radius: 0;      /* ❌ no rounded edges */
-      box-shadow: none;      /* ❌ no shadow */
+      background: rgba(0,0,0,0.6);
+      padding: 16px 28px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
     }
+
 
     </style>
 
