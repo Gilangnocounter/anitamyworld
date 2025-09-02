@@ -365,27 +365,29 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4); /* semi transparan */
+      background: rgba(0,0,0,0.35); /* semi transparan tipis */
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 999; /* di atas canvas, tapi di bawah panel utama */
+      z-index: 999; /* di atas canvas */
       font-family: 'Poppins', sans-serif;
-      color: white;
-      font-size: 1.5rem;
-      letter-spacing: 1px;
+      color: #f0f0f0;
+      font-size: 1.2rem;
+      line-height: 1.6;
       text-align: center;
-      backdrop-filter: blur(3px);
+      backdrop-filter: blur(2px);
       transition: opacity 0.5s ease;
+      padding: 0 20px;
     }
-
+    
     .overlay-instruction span {
-      background: rgba(0,0,0,0.6);
-      padding: 16px 28px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      max-width: 600px;
+      font-weight: 400;
+      background: none;      /* ❌ no background box */
+      padding: 0;            /* ❌ no padding */
+      border-radius: 0;      /* ❌ no rounded edges */
+      box-shadow: none;      /* ❌ no shadow */
     }
-
 
     </style>
 
@@ -471,8 +473,9 @@
 <body>
     <!-- instruksi -->
     <div id="overlayInstruction" class="overlay-instruction">
-        <span>Double click to animate</span>
+        <span>3D Website: Double-click anywhere for interactive effects. Drag to move, zoom in or out.</span>
     </div>
+
     
     <canvas id="canvas"
         style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10;pointer-events:none;"></canvas>
@@ -483,7 +486,8 @@
         <div class="panel-content">
           <h2>Do you wanna see the prettiest girl ever?</h2>
           <div>
-              <button id="btnYes" onclick="startMusic()">Of course 😍</button>
+<!--               <button id="btnYes" onclick="startMusic()">Of course 😍</button> -->
+              <button id="btnYes">Of course 😍</button>
               <button id="noBtn" onclick="moveNoBtn()">No way 🙂‍↔️</button>
           </div>
       </div>
@@ -686,9 +690,8 @@
             overlayInstruction.style.opacity = "0";
             setTimeout(() => {
               overlayInstruction.style.display = "none";
-            }, 500); // match dengan transition 0.5s
+            }, 500);
           });
-
         
         // Fungsi untuk memindahkan tombol "Tidak"
         function moveNoBtn() {
