@@ -586,11 +586,11 @@
     </button>
     <script>
         const audio = document.getElementById("bgm");
-          // coba unmute setelah delay (kadang perlu trick kecil)
-          setTimeout(() => {
+        // coba unmute setelah delay (kadang perlu trick kecil)
+        setTimeout(() => {
             audio.muted = false;
             audio.volume = 0.5; // atur volume
-          }, 1000);
+        }, 1000);
         
         function isMobileDevice() {
             // Kiểm tra user agent cho mobile và tablet
