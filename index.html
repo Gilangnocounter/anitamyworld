@@ -310,6 +310,70 @@
             cursor: pointer;
             z-index: 10001;
         }
+
+    /* QUESTION PANEL STYLE */
+    .overlay-panel {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); /* semi transparan */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; /* biar di atas canvas */
+      backdrop-filter: blur(5px);
+    }
+    
+    /* Konten panel */
+    .panel-content {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 30px 40px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+    }
+    
+    /* Judul pertanyaan */
+    .panel-content h2 {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+    
+    /* Tombol */
+    .panel-buttons {
+      position: relative;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+    
+    .panel-buttons button {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    
+    #btnYes {
+      background: #ff4da6;
+      color: white;
+    }
+    
+    #noBtn {
+      background: #ddd;
+      color: #333;
+      position: absolute;
+    }
+    
+    .panel-buttons button:hover {
+      transform: scale(1.05);
+    }
+   
     </style>
 
     <script src="js/exif.js"></script>
@@ -396,6 +460,19 @@
         style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10;pointer-events:none;"></canvas>
     <div class="stars-bg"></div>
 
+    <!-- QUESTION PANEL -->
+   <div id="questionPanel" class="overlay-panel">
+      <div class="panel-content">
+        <h2>Do you wanna see the prettiest girl ever?</h2>
+        <div class="panel-buttons">
+          <button id="btnYes">Of course 😍</button>
+          <button id="noBtn">No way 🙂‍↔️</button>
+        </div>
+      </div>
+    </div>
+
+
+    
     <!-- PANEL INSTRUKSI -->
     <div class="help-panel" style="display:none;">
         <div class="controls-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -571,7 +648,7 @@
     </div>
 
     <!-- Backsound -->
-    <audio id="bgm" src="assets/images/music.mp3" loop></audio>
+    <audio id="bgm" src="assets/audio/music.mp3" loop></audio>
 
     <!-- GIFT BUTTON -->
 <!--     <button id="gift-btn" class="gift-btn" title="Hiệu ứng bay vòng ảnh" style="display:none;">
@@ -583,18 +660,32 @@
         <img src="assets/images/letter.gif" alt="Letter" style="width: 28px; height: 28px; vertical-align: middle;">
     </button>
     <script>
-        const audio = document.getElementById("bgm");
-
-        // buat AudioContext
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const track = ctx.createMediaElementSource(audio);
-        track.connect(ctx.destination);
+        // QUESTION PANEL SCRIPT
+          const panel = document.getElementById("questionPanel");
+          const btnYes = document.getElementById("btnYes");
+          const btnNo = document.getElementById("noBtn");
+          const audio = document.getElementById("bgm");
         
-        // coba play otomatis
-        audio.play().catch(() => {
-          // kalau gagal, coba resume context
-          ctx.resume().then(() => audio.play());
-        });
+          // Fungsi untuk memindahkan tombol "No"
+          function moveNoBtn() {
+            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 20);
+            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 20);
+            btnNo.style.left = x + "px";
+            btnNo.style.top = y + "px";
+          }
+        
+          // Event listener: saat mouse mendekat tombol No → dia kabur
+          btnNo.addEventListener("mouseenter", moveNoBtn);
+        
+          // Klik Yes → sembunyikan panel & play musik
+          btnYes.addEventListener("click", () => {
+            panel.style.display = "none";
+            audio.volume = 0.5;     // atur volume
+            audio.play().catch(err => {
+              console.error("Audio gagal play:", err);
+            });
+          });
+
         
         function isMobileDevice() {
             // Kiểm tra user agent cho mobile và tablet
