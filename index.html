@@ -570,13 +570,13 @@
         </div>
     </div>
 
-<!-- Backsound -->
-    <audio id="bgmusic" autoplay loop>
+    <!-- Backsound -->
+    <audio id="bgm" autoplay loop muted>
         <source src="assets/audio/music.mp3" type="audio/mpeg">
     </audio>
 
     <!-- GIFT BUTTON -->
-    <button id="gift-btn" class="gift-btn" title="Hiệu ứng bay vòng ảnh">
+    <button id="gift-btn" class="gift-btn" title="Hiệu ứng bay vòng ảnh" style="display:none;">
         <img src="assets/images/gift.gif" alt="Gift" style="width: 28px; height: 28px; vertical-align: middle;">
     </button>
 
@@ -585,12 +585,12 @@
         <img src="assets/images/letter.gif" alt="Letter" style="width: 28px; height: 28px; vertical-align: middle;">
     </button>
     <script>
-        // const audio = document.getElementById("bgm");
-        // // coba unmute setelah delay (kadang perlu trick kecil)
-        // setTimeout(() => {
-        //     audio.muted = false;
-        //     audio.volume = 0.5; // atur volume
-        // }, 1000);
+        const audio = document.getElementById("bgm");
+        // coba unmute setelah delay (kadang perlu trick kecil)
+        setTimeout(() => {
+            audio.muted = false;
+            audio.volume = 0.5; // atur volume
+        }, 1000);
         
         function isMobileDevice() {
             // Kiểm tra user agent cho mobile và tablet
